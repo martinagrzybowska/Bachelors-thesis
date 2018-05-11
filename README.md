@@ -12,10 +12,22 @@ One of the most frequent ways to test system performance is the program profilin
 
 Installation
 ------------
-Perun installation is described at its official repository found at <https://github.com/tfiedor/perun>. The GUI can be launched without a Perun installation in the system, however, no performance profile stats will be displayed.
+#### Perun tool
 
 ``` bash
-# install dependencies (currently Flask only)
+# get Perun
+$ git clone https://github.com/tfiedor/perun.git
+$ make init
+$ sudo make install
+```
+
+In case of any issues refer to Perun README or official documentation found at <https://github.com/tfiedor/perun>.
+
+#### GUI
+The GUI can be launched from anywhere inside the filesystem.
+
+``` bash
+# install dependencies
 $ make install
 
 # runs the Flask server at http://10.211.55.7:5000/

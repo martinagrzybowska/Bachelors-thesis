@@ -1,6 +1,5 @@
 from __future__ import print_function
 import os, sys, json
-import yaml
 import collections
 from shutil import rmtree
 
