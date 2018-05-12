@@ -207,20 +207,3 @@ def format_degradation_numbers(performance_dict):
     perf['MaybeOptimization'] = performance_dict['MaybeOptimization'] if ('MaybeOptimization' in performance_dict) else 0
     perf['Optimization'] = performance_dict['Optimization'] if ('Optimization' in performance_dict) else 0
     return perf
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

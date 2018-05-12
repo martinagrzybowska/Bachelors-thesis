@@ -120,26 +120,6 @@ def remove_perun_instance(repo_path):
         eprint(e)
         return create_response(e, 404)
 
-# def get_minor_versions_of_branch(vcs_type, repo_path):
-#     """Function for loading minor versions of a branch, currently only the major branch
-#     :param str vcs_type: type of the version control system
-#     :param str path_to_repo: path to the repository
-#     :return: list of minor versions on success, otherwise 404 NOT FOUND
-#     """
-#     if os.path.isdir(repo_path):
-#         minor_versions = []
-#         head = vcs.get_minor_head(vcs_type, repo_path)
-
-#         for minor_version in vcs.walk_minor_versions(vcs_type, repo_path, head):
-#             minor_versions.append(formatter.format_minor_versions_of_branch(minor_version, '', False))
-
-#         return minor_versions
-
-#     else:
-#         return NOT_FOUND
-
-# get_minor_versions_of_branch('git','/home/parallels/Desktop/BP/git-test-dir')
-
 def get_repo_branch_names(vcs_type, repo_path):
     """Function for loading major versions of a repository
     :param str vcs_type: type of the version control system
@@ -223,16 +203,6 @@ def get_repo_branch_commits(pcs, vcs_type, repo_path, branch_name):
         eprint(e)
         return '', create_response(e, 404)
 
-# def get_branch_commit_info(vcs_type, vcs_path, branch_name, minor_version):
-#     """Function for loading minor version information
-#     :param str vcs_type: type of the version control system
-#     :param str vcs_path: path to the repository
-#     :param str minor_version_sha: minor version SHA
-#     :return: dictionary with minor version data
-#     """
-#     minor_version = vcs.get_minor_version_info(vcs_type, vcs_path, minor_version)
-#     return formatter.format_single_minor_version_info(minor_version, branch_name)
-
 def get_single_minor_version_info(vcs_type, vcs_path, minor_version_sha):
     """Function for loading minor version information
     :param str vcs_type: type of the version control system
@@ -248,13 +218,8 @@ def get_single_minor_version_info(vcs_type, vcs_path, minor_version_sha):
         eprint(e)
         return create_response(e, 404)
 
-# def dump(obj):
-#    for attr in dir(obj):
-#        if hasattr( obj, attr ):
-#            print( "obj.%s = %s" % (attr, getattr(obj, attr)))
-
 @pass_pcs
-def get_single_minor_version_profiles(pcs, minor_version, branch_name):
+def get_single_minor_version_profiles(pcs, minor_version, branch_name, repo_path):
     """Function for loading performance profiles of a single minor version
     :param PCS pcs: object with performance control system wrapper
     :param str minor_version: minor version SHA
@@ -266,26 +231,33 @@ def get_single_minor_version_profiles(pcs, minor_version, branch_name):
     try:
         # registered profiles
         profiles_objs = commands.get_minor_version_profiles(pcs, minor_version);
+        
+        if (not profiles_objs):
+            os.chdir(repo_path)
+
         for num, profile_obj in enumerate(profiles_objs):
             output.append(formatter.format_profiles(profile_obj, minor_version, True, 'remove', branch_name))
             output_objs.append(profile_obj)
 
         # pending profiles
         profiles_objs = commands.get_untracked_profiles(pcs);
+
+        if (not profiles_objs):
+            os.chdir(repo_path)
+
         for num, profile_obj in enumerate(profiles_objs):
             unpacked_profile = profile.load_profile_from_file(profile_obj.realpath, is_raw_profile=True)
             if (unpacked_profile['origin'] == minor_version):
                 output.append(formatter.format_profiles(profile_obj, minor_version, False, 'register', branch_name))
                 output_objs.append(profile_obj)
-
+        
         return output_objs, output, json.dumps({'profiles' : output})
 
     except Exception as e:
         eprint(e)
         return '', '', create_response(e, 404)
 
-@pass_pcs
-def get_all_repo_profiles(pcs, vcs_type, repo_path):
+def get_all_repo_profiles(vcs_type, repo_path):
     """Function for loading performance profiles of the whole repository
     :param PCS pcs: object with performance control system wrapper
     :param str vcs_type: type of the version control system
@@ -300,15 +272,18 @@ def get_all_repo_profiles(pcs, vcs_type, repo_path):
         for branch in major_versions:
             minor_versions = helper_get_repo_branch_commits(vcs_type, repo_path, branch.name)
             for commit in minor_versions:
-                objs, profiles, profiles_json = get_single_minor_version_profiles(commit.checksum, branch.name)
+
+                objs, profiles, profiles_json = get_single_minor_version_profiles(commit.checksum, branch.name, repo_path)
+
                 for perf_profile in profiles:
                     if not any(d['id'] == perf_profile['id'] for d in output):
                         output.append(perf_profile)
-                
+
                 for perf_profile_obj in objs:
                     if (not any(x for x in output_objs if x.source == perf_profile_obj.source)):
                         output_objs.append(perf_profile_obj)
 
+        
         return output_objs, output, json.dumps({'profiles' : output})
 
     except Exception as e:
@@ -359,6 +334,7 @@ def get_single_profile_info(pcs, minor_version, profile_source):
     :param str profile_source: name of the performance profile
     :return: dictionary containing performance profile info
     """
+
     try:
         profiles_objs = commands.get_minor_version_profiles(pcs, minor_version);
         for num, profile_obj in enumerate(profiles_objs):
@@ -565,7 +541,7 @@ def collect_profile_using_job_matrix(vcs_type, repo_path, minor_version):
         os.chdir(repo_path)
         minor_version_obj = vcs.get_minor_version_info(vcs_type, repo_path, minor_version)
         runner.run_matrix_job([minor_version_obj])
-        objs, output, jsn = get_single_minor_version_profiles(minor_version, '')
+        objs, output, jsn = get_single_minor_version_profiles(minor_version, '', repo_path)
         os.chdir(original_path)
         return jsonify({'profiles': output})
     
@@ -668,10 +644,10 @@ def get_performance_profiles_list(repo_path, vcs_type, compare_profile):
     :param str compare_profile: baseline profile SHA
     :return: json containing performance profiles list, 404 NOT FOUND otherwise
     """
-    original_path = os.getcwd()
+
     try:
-        os.chdir(repo_path)
-        objs, profiles, jsn = get_all_repo_profiles('git', repo_path)
+        objs, profiles, jsn = get_all_repo_profiles(vcs_type, repo_path)
+
         output = []
         for perf_profile in profiles:
             if (compare_profile != perf_profile['id']):
@@ -680,10 +656,8 @@ def get_performance_profiles_list(repo_path, vcs_type, compare_profile):
         return json.dumps({'profiles': output})
 
     except Exception as e:
-        os.chdir(original_path)
         eprint(e)
         return create_response(e, 404)
-
 
 def get_profiles_to_compare(repo_path, baseline, target):
     """Function for loading two profiles which are to be compared
@@ -741,7 +715,7 @@ def get_profiles_numbers(pcs, repo_path, vcs_type):
 
             branches_output.append({ 'branch' : branch.name, 'commit': branch.head, 'profiles': numbers, 'performance': degs})
 
-        profiles_new, formatted, jsn = get_all_repo_profiles('git', repo_path)
+        profiles_new, formatted, jsn = get_all_repo_profiles(vcs_type, repo_path)
         profile_numbers = commands.calculate_profile_numbers_per_type(profiles_new)
 
         numbers = {

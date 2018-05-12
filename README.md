@@ -30,8 +30,11 @@ The GUI can be launched from anywhere inside the filesystem.
 # install dependencies
 $ make install
 
-# runs the Flask server at port 5000
+# runs the Flask server at localhost:5000
 $ make run
+
+# runs the Flask server at http://[hostIP]:5000, used for running on virtual machines
+$ make host
 ```
 
 Development mode

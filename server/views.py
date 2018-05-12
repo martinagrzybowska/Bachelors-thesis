@@ -89,7 +89,7 @@ def get_commit_profiles(repo_path, commit_id):
     """
     original_path = os.getcwd()
     os.chdir(tidy_path(repo_path))
-    objs, profiles_obj, profiles = get_single_minor_version_profiles(commit_id, '')
+    objs, profiles_obj, profiles = get_single_minor_version_profiles(commit_id, '', tidy_path(repo_path))
     os.chdir(original_path)
     return profiles
 
@@ -149,13 +149,13 @@ def collect_new_profiles_job_matrix(repo_path, commit_id):
     return collect_profile_using_job_matrix(vcs_type, tidy_path(repo_path), commit_id)
 
 
-#TODO
+#Prepared for future development
 @app.route('/repos/<path:repo_path>/<string:commit_id>/single-job/collect-new', methods=['GET'])
 def collect_new_profiles(repo_path, commit_id):
     payload = request.get_json(force=True)
     original_path = os.getcwd()
     os.chdir(tidy_path(repo_path))
-    profiles = jsonify({'profiles': new_collected_profiles})
+    profiles = jsonify({'profiles': 'new_collected_profiles'})
     os.chdir(original_path)
     return profiles
 
@@ -221,7 +221,12 @@ def get_all_profiles_list(repo_path, profile_name):
     :param str profile_name: name of the baseline performance profile
     :return: json containing list of performance profiles, 404 NOT FOUND otherwise
     """
-    return get_performance_profiles_list(tidy_path(repo_path), vcs_type, profile_name)
+    original_path = os.getcwd()
+    os.chdir(tidy_path(repo_path))
+    output = get_performance_profiles_list(tidy_path(repo_path), vcs_type, profile_name)
+    os.chdir(original_path)
+    return output
+
 
 @app.route('/repos/<path:repo_path>/profiles/compare', methods=['PATCH'])
 def get_compare_profiles(repo_path):

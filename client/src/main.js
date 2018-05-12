@@ -4,10 +4,8 @@ import App from './App.vue'
 import VueRouter from 'vue-router'
 import { store } from './store/store'
 import Loader from 'vue-spinner/src/RiseLoader.vue'
-// import createPersistedState from 'vuex-persistedstate'
+
 import VueHighcharts from 'vue-highcharts'
-
-
 
 import Repos from './components/Repos.vue'
 import GlobalSettings from './components/GlobalSettings.vue'

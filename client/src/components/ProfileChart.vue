@@ -71,7 +71,7 @@
 					<span>by</span>
 				</div>
 				
-				<div class="profile-visualization-item dropdown ending" v-if="selectedOptions.type != 'none'">
+				<div v-if="selectedOptions.type != 'none'" class="profile-visualization-item dropdown ending">
 					<select v-model="selectedOptions.by">
 						<option disabled value="">Please select one</option>
 						<option selected>{{ selectedOptions.by }}</option>
@@ -81,9 +81,9 @@
 					</select>
 				</div>
 				
-				<div class="profile-visualization-item dropdown ending" v-else>
+				<div v-else-if="checkSwitchToNone()" class="profile-visualization-item dropdown ending" >
 					<select>
-						<option selected>----</option>
+						<option selected>{{ selectedOptions.by }}</option>
 					</select>
 				</div>
 				
@@ -283,6 +283,17 @@
 		},
 		methods: {
 			/**
+			 * Clears 'by option' if graph type switched to none
+			 */
+			checkSwitchToNone: function() {
+				if (this.selectedOptions.type == 'none') {
+					this.selectedOptions.by = '----';
+					return true;
+				}
+
+				return false;
+			},
+			/**
 			 * Creates a set up of options for different chart types
 			 */
 			selectChartType: function(chartType) {
@@ -353,7 +364,6 @@
 						}
 						else {
 							Object.keys(this.chartData).forEach((xValue) => {
-								console.log(xValue[this.selectedOptions.x]);
 								output.push(xValue[this.selectedOptions.x]);
 							});
 						}
@@ -361,8 +371,6 @@
 				}
 
 				this.categoriesNum = output.length - 1;
-				console.log(this.categoriesNum);
-				console.log(output);
 				return output;
 
 			},

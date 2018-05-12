@@ -1885,5 +1885,16 @@ body {
 	color: #607D8B;
 }
 
+.dashboard-row.empty div {
+	font-size: 9px;
+	font-weight: 100;
+	color: #dce2e5;
+	text-decoration: none;
+}
 
+.dashboard-row.empty div a {
+	text-decoration: none;
+	color: #dce2e5;
+	text-decoration: underline;
+}
 

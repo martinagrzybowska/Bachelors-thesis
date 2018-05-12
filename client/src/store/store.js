@@ -9,7 +9,14 @@ import createPersistedState from 'vuex-persistedstate'
 
 export const store = new Vuex.Store({
 	plugins: [
-		createPersistedState()
+		createPersistedState({
+			reducer: state => ({
+				currentRepoName: state.currentRepoName,
+				currentRepoPath: state.currentRepoPath,
+				currentBranch: state.currentBranch,
+				searchPath: state.searchPath,
+			}),
+		}),
 	],
 	state: {
 		loadingScreen: false,
@@ -24,16 +31,16 @@ export const store = new Vuex.Store({
 			'bug2Fix',
 		],
 		error: '',
-		dashboard: {all: {time: 0, memory: 0, mixed: 0, all: 0}, branches: []},
+		dashboard: {all: {time: 0, memory: 0, mixed: 0, all: 900}, branches: []},
 		searchPath: '',
 		repositories: [],
 		profiles: [],
 		commits: [],
 		commitInfo: {
 			'author': '',
-    		'date': '',
-    		'message': '',
-    		'parents': [],
+			'date': '',
+			'message': '',
+			'parents': [],
 		},
 		profile: {
 			profiled_command: [

@@ -49,6 +49,10 @@ export default {
 	 */
 	getCompareProfilesList: function({ commit }, payload) {
 		
+		var time = setTimeout(() => { 
+			commit('setLoadingScreen', true);
+		}, 400);
+
 		payload.path = tidyURL(payload.path);
 		var URL = '/repos/' + payload.path + '/profiles/' + payload.id + '/list';
 
@@ -56,9 +60,13 @@ export default {
 			if (response.status == 200) {
 				commit('setCompareProfilesList', response.data);
 			}
+			clearTimeout(time);
+			commit('setLoadingScreen', false);
 		})
 		.catch(error => {
-			commit('setError', error)
+			clearTimeout(time);
+			commit('setLoadingScreen', false);
+			commit('setError', error);
 		});
 
 	},
@@ -67,6 +75,10 @@ export default {
 	 */
 	getProfilesToCompare: function({ commit }, payload) {
 
+		var time = setTimeout(() => { 
+			commit('setLoadingScreen', true); 
+		}, 400);
+		
 		payload.path = tidyURL(payload.path);
 		var URL = '/repos/' + payload.path + '/profiles/compare';
 
@@ -74,9 +86,13 @@ export default {
 			if (response.status == 200) {
 				commit('setProfilesToCompare', response.data);
 			}
+			clearTimeout(time);
+			commit('setLoadingScreen', false);
 		})
 		.catch(error => {
-			commit('setError', error)
+			clearTimeout(time);
+			commit('setLoadingScreen', false);
+			commit('setError', error);
 		});
 
 	},
@@ -108,7 +124,7 @@ export default {
 		.catch(error => {
 			clearTimeout(time);
 			commit('setLoadingScreen', false);
-			commit('setError', error)
+			commit('setError', error);
 		});
 	},
 	/**
@@ -135,7 +151,7 @@ export default {
 			commit('setLoadingScreen', false);
 			commit('setErrorScreen', true);
 			setTimeout(() => { commit('setErrorScreen', false);}, 1000);
-			commit('setError', error)
+			commit('setError', error);
 		});
 	},
 	/**
@@ -161,7 +177,7 @@ export default {
 		.catch(error => {
 			commit('setErrorScreen', true);
 			setTimeout(() => { commit('setErrorScreen', false); }, 1000);
-			commit('setError', error)
+			commit('setError', error);
 		});
 	},
 	/**
@@ -183,7 +199,7 @@ export default {
 		.catch(error => {
 			commit('setErrorScreen', true);
 			setTimeout(() => { commit('setErrorScreen', false);}, 1000);
-			commit('setError', error)
+			commit('setError', error);
 		});
 	},
 	/**
@@ -200,7 +216,7 @@ export default {
 			}
 		})
 		.catch(error => {
-			commit('setError', error)
+			commit('setError', error);
 		});
 
 	},
@@ -226,7 +242,7 @@ export default {
 		.catch(error => {
 			clearTimeout(time);
 			commit('setLoadingScreen', false);
-			commit('setError', error)
+			commit('setError', error);
 		});
 	},
 	/**
@@ -243,7 +259,7 @@ export default {
 			}
 		})
 		.catch(error => {
-			commit('setError', error)
+			commit('setError', error);
 		});
 	},
 	/**
@@ -268,7 +284,7 @@ export default {
 			commit('setLoadingScreen', false);
 			commit('setErrorScreen', true);
 			setTimeout(() => { commit('setErrorScreen', false);}, 1000);
-			commit('setError', error)
+			commit('setError', error);
 		});
 	},
 	/**
@@ -293,7 +309,7 @@ export default {
 			commit('setLoadingScreen', false);
 			commit('setErrorScreen', true);
 			setTimeout(() => { commit('setErrorScreen', false);}, 1000);
-			commit('setError', error)
+			commit('setError', error);
 		});
 	},
 	/**
@@ -318,7 +334,7 @@ export default {
 			commit('setLoadingScreen', false);
 			commit('setErrorScreen', true);
 			setTimeout(() => { commit('setErrorScreen', false);}, 1000);
-			commit('setError', error)
+			commit('setError', error);
 		});
 	},
 	/**
@@ -345,7 +361,7 @@ export default {
 		.catch(error => {
 			commit('setErrorScreen', true);
 			setTimeout(() => { commit('setErrorScreen', false);}, 1000);
-			commit('setError', error)
+			commit('setError', error);
 		});
 	},
 	/**
@@ -367,7 +383,7 @@ export default {
 		.catch(error => {
 			commit('setErrorScreen', true);
 			setTimeout(() => { commit('setErrorScreen', false);}, 1000);
-			commit('setError', error)
+			commit('setError', error);
 		});
 	},
 	/**
@@ -381,7 +397,7 @@ export default {
 		.catch(error => {
 			commit('setErrorScreen', true);
 			setTimeout(() => { commit('setErrorScreen', false);}, 1000);
-			commit('setError', error)
+			commit('setError', error);
 		});
 	},
 	/**
@@ -401,7 +417,7 @@ export default {
 		.catch(error => {
 			commit('setErrorScreen', true);
 			setTimeout(() => { commit('setErrorScreen', false);}, 1000);
-			commit('setError', error)
+			commit('setError', error);
 		});
 	},
 	/**
@@ -418,7 +434,7 @@ export default {
 		.catch(error => {
 			commit('setErrorScreen', true);
 			setTimeout(() => { commit('setErrorScreen', false);}, 1000);
-			commit('setError', error)
+			commit('setError', error);
 		});
 	},
 	/**
@@ -441,7 +457,7 @@ export default {
 		.catch(error => {
 			commit('setErrorScreen', true);
 			setTimeout(() => { commit('setErrorScreen', false);}, 1000);
-			commit('setError', error)
+			commit('setError', error);
 		});
 	},
 	/**
@@ -464,7 +480,7 @@ export default {
 		.catch(error => {
 			commit('setErrorScreen', true);
 			setTimeout(() => { commit('setErrorScreen', false);}, 1000);
-			commit('setError', error)
+			commit('setError', error);
 		});
 	},
 	/**
@@ -482,7 +498,7 @@ export default {
 		.catch(error => {
 			commit('setErrorScreen', true);
 			setTimeout(() => { commit('setErrorScreen', false);}, 1000);
-			commit('setError', error)
+			commit('setError', error);
 		});
 	},
 	/**
@@ -505,7 +521,7 @@ export default {
 		.catch(error => {
 			commit('setErrorScreen', true);
 			setTimeout(() => { commit('setErrorScreen', false);}, 1000);
-			commit('setError', error)
+			commit('setError', error);
 		});
 	},
 	/**
@@ -525,7 +541,7 @@ export default {
 		.catch(error => {
 			commit('setErrorScreen', true);
 			setTimeout(() => { commit('setErrorScreen', false);}, 1000);
-			commit('setError', error)
+			commit('setError', error);
 		});
 	}
 }

@@ -15,7 +15,7 @@
 					</div>
 				</div>
 
-				<template v-if="mode != 'global' && !item.value && !item.nearest">
+				<template v-if="mode != 'global' && item.value == '' && item.nearest != ''">
 					<span class="settings-item-heading secondary">Nearest set</span>
 					<span class="settings-item-subheading secondary nearest">{{ item.nearest }}</span>
 					<!-- <span class="settings-item-subheading secondary">{{ item.path }}</span> -->
@@ -45,7 +45,7 @@
 					</div>
 				</div>
 				
-				<template v-if="mode != 'global' && !item.value && !item.nearest">
+				<template v-if="mode != 'global' && item.value == '' && item.nearest != ''">
 					
 					<span class="settings-item-heading secondary">Nearest set</span>
 					<span class="settings-item-subheading secondary">{{ item.path }}</span>
