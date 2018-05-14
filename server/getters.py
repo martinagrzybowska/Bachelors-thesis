@@ -81,8 +81,7 @@ def get_repos_from_path(vcs_type, path_to_search):
         eprint(e)
         return create_response('Invalid path', 404)
 
-@pass_pcs
-def create_perun_instance(pcs, repo_path, vcs_type): #/home/parallels/Desktop/test-one
+def create_perun_instance(repo_path, vcs_type):
     """Function creating a Perun wrapper over the specified repository
     :param PCS pcs: object with performance control system wrapper
     :param str repo_path: path to the repo
