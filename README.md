@@ -39,7 +39,7 @@ $ make host
 
 **NOTE**: if after running the GUI the server logs 'perun.check has no member ...', try pulling
 the develop branch of Perun repository and installing Perun again. Some changes integrated in the GUI
-were only very recently added to Perun and some may have yet to merged into master.
+were only very recently added to Perun and some may have yet to be merged into master.
 
 Development mode
 ------------
